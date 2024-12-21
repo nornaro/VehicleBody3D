@@ -1,0 +1,51 @@
+[gd_scene load_steps=6 format=3 uid="uid://c6co6boamahv1"]
+
+[ext_resource type="Script" path="res://vehicle_body_3d.gd" id="1_d41w2"]
+[ext_resource type="PackedScene" uid="uid://b8738c0x57oaj" path="res://vehicle_wheel_3d.tscn" id="2_uq1ss"]
+[ext_resource type="Script" path="res://camera.gd" id="3_tfggr"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_a0tk4"]
+size = Vector3(1, 0.5, 2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_r3fl7"]
+size = Vector3(1, 0.5, 2)
+
+[node name="VehicleBody3D" type="VehicleBody3D" node_paths=PackedStringArray("camera")]
+collision_priority = 5.0
+mass = 4000.0
+script = ExtResource("1_d41w2")
+type = 2
+wheels = Array[VehicleWheel3D]([null, null, null, null, null, null, null, null, null, null])
+camera = NodePath("Camera3D")
+settings = {
+"camera_offset": Vector3(0, 3, 1),
+"force": 1.0,
+"max_brake": 5.0,
+"max_force": 100.0,
+"max_steer": 0.8,
+"steer": 0.1
+}
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+mesh = SubResource("BoxMesh_a0tk4")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_r3fl7")
+
+[node name="VehicleWheel3D1" parent="." instance=ExtResource("2_uq1ss")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, -1, 1)
+
+[node name="VehicleWheel3D4" parent="." instance=ExtResource("2_uq1ss")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, -1, -1)
+
+[node name="VehicleWheel3D2" parent="." instance=ExtResource("2_uq1ss")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, -1, 1)
+
+[node name="VehicleWheel3D3" parent="." instance=ExtResource("2_uq1ss")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, -1, -1)
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.960571, 0.278036, 0, -0.278036, 0.960571, 0, 0.706467, 1.01549)
+current = true
+script = ExtResource("3_tfggr")

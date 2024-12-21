@@ -186,7 +186,7 @@ func _process(_delta: float) -> void:
 	placeholder.visible = state == InteractionState.DRAG or state == InteractionState.ANIMATE_INTO_PLACE
 	gradient.visible = show_controls
 	
-	# Sync camera settings.
+	# Sync camera 
 	if camera_type == CameraType.CAMERA_3D and selected_camera_3d:
 		sub_viewport.size = panel.size
 		
@@ -353,8 +353,8 @@ func get_clamped_size(desired_size: Vector2) -> Vector2:
 	return clamped_size.floor()
 	
 func get_project_window_size() -> Vector2:
-	var window_width = float(ProjectSettings.get_setting("display/window/size/viewport_width"))
-	var window_height = float(ProjectSettings.get_setting("display/window/size/viewport_height"))
+	var window_width = float(Projectget_setting("display/window/size/viewport_width"))
+	var window_height = float(Projectget_setting("display/window/size/viewport_height"))
 	
 	return Vector2(window_width, window_height)
 	

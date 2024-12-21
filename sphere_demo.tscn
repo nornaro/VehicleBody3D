@@ -1,0 +1,17 @@
+[gd_scene load_steps=4 format=3 uid="uid://nutqxqdgjd0p"]
+
+[ext_resource type="Script" path="res://vehicle_body_3d.gd" id="1_p5u2l"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_a0tk4"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_r3fl7"]
+
+[node name="Sphere_demo" type="VehicleBody3D"]
+script = ExtResource("1_p5u2l")
+metadata/type = &"Sphere"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_a0tk4")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_r3fl7")

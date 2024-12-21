@@ -65,6 +65,8 @@ func _input(event):
 
 # Updates mouselook and movement every frame
 func _process(delta):
+	if !Input.is_action_pressed("break"):
+		return
 	_update_mouselook()
 	_update_movement(delta)
 

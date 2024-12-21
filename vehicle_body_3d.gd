@@ -7,12 +7,19 @@ enum Vehicle {
 	Submarine, Rocket, Boat, Walker
 }
 
-var old_type: Vehicle = Vehicle.Car
 var direction: Vector2
-@export var type: Vehicle = Vehicle.Car
+var type: Vehicle = Vehicle.Sphere
 @export var wheels: Array[VehicleWheel3D]
 @export var camera: Camera3D
-@export var settings: Dictionary = {}
+@export var settings: Dictionary = {
+			"camera_offset" = Vector3(0, 3, 1),
+			"force" = 2.5,
+			"max_force" = 150.0,
+			"max_brake" = 3.0,
+			"steer" = 0.4,
+			"max_steer" = 0.8,
+			"drive" = "A", # A:AllWD, F: FrontWD, B: BackWD, 4: 4WD
+}
 
 func _input(event: InputEvent) -> void:
 	match type:
@@ -22,59 +29,28 @@ func _input(event: InputEvent) -> void:
 		Vehicle.Car:
 			steering = move_toward(steering, Input.get_axis("right", "left") * settings.max_steer, settings.steer)
 			engine_force = move_toward(engine_force, Input.get_axis("backward", "forward") * settings.max_force, settings.force)
+		Vehicle.Tank:
+			# Get the raw axis inputs
+			var right_left_input = Input.get_axis("right", "left")
+			var forward_backward_input = Input.get_axis("backward", "forward")
 
+			# Normalize the inputs so that both have 50% power if both are active
+			if abs(right_left_input) > 0 and abs(forward_backward_input) > 0:
+				right_left_input *= 0.5
+				forward_backward_input *= 0.5
 
-#func _physics_process(delta: float) -> void:
-	#
-	## Camera position based on camera_offset
-	#if camera:
-		#camera.position = position + settings.get("camera_offset", Vector3.ZERO)
+			# Apply the steering and engine force calculations
+			steering = move_toward(steering, right_left_input * settings.max_steer, settings.steer)
+			engine_force = move_toward(engine_force, forward_backward_input * settings.max_force, settings.force)
 
 
 func _physics_process(delta: float) -> void:
-	if type != old_type:
-		update_settings()
-		old_type = type
-		notify_property_list_changed()
 	match type:
 		Vehicle.Sphere:
-			#angular_velocity = linear_velocity
-			#look_at(Vector3(direction.x,0,direction.y))
-			
 			linear_velocity += Vector3(direction.x,0,direction.y)*clamp(settings.force*delta,-settings.max_force,settings.max_force)
-			#look_at(linear_velocity*10)
-			camera.position = position + Vector3(0,10,0)
-			print(linear_velocity.normalized())
+			camera.position = position + settings.camera_offset
 
 
-# Updates the settings dictionary based on the vehicle type.
-func update_settings():
-	match type:
-		Vehicle.Sphere:
-			settings["camera_offset"] = Vector3(0, 3, 1)
-			settings["force"] = 2.5
-			settings["max_force"] = 150.0
-			settings["max_brake"] = 3.0
-			settings["steer"] = 0.4
-			settings["max_steer"] = 0.8
-		Vehicle.Car:
-			settings["camera_offset"] = Vector3(0, 3, 1)
-			settings["force"] = 10.0
-			settings["max_force"] = 150.0
-			settings["max_brake"] = 3.0
-			settings["steer"] = 0.4
-			settings["max_steer"] = 0.8
-		Vehicle.Tank:
-			settings["camera_offset"] = Vector3(0, 4, 2)
-			settings["force"] = 10.0
-			settings["max_force"] = 100.0
-			settings["max_brake"] = 4.0
-			settings["steer"] = 0.25
-			settings["max_steer"] = 0.5
-		Vehicle.Bike:
-			settings["camera_offset"] = Vector3(0, 2, 1)
-			settings["force"] = 10.0
-			settings["max_force"] = 40.0
-			settings["max_brake"] = 1.5
-			settings["steer"] = 0.5
-			settings["max_steer"] = 1.0
+func _ready() -> void:
+	type = get_meta("type")
+	
