@@ -52,5 +52,11 @@ func _physics_process(delta: float) -> void:
 
 
 func _ready() -> void:
-	type = get_meta("type")
-	
+	type = Vehicle[StringName(get_meta("type"))]
+	match type:
+		Vehicle.Sphere:
+			pass
+		Vehicle.Car:
+			pass
+		Vehicle.Tank:
+			pass
